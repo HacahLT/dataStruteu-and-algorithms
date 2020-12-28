@@ -41,7 +41,7 @@ public class FibonacciSearch {
     public static int fibnaSearch(int[] arr, int findVal) {
         int left = 0;
         int right = arr.length - 1;
-        // 记录是第几可斐波那契数列
+        // 记录是第几个斐波那契数列
         int k = 0;
         // 记录中间值
         int mid = 0;
