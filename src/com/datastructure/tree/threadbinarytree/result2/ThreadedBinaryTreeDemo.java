@@ -1,25 +1,28 @@
-package com.datastructure.tree;
+package com.datastructure.tree.threadbinarytree.result2;
 
 /**
  * @author Hacah
  * @date 2021/1/2 21:04
- * @Description 实现二叉树的前、中、后序遍历。
+ * @Description 实现二叉树的中序线索化二叉树的第二种方法，把代码封装内部。
  */
-public class BinaryTreeDemo {
+public class ThreadedBinaryTreeDemo {
 
     public static void main(String[] args) {
-        BinaryTree binaryTree = new BinaryTree(1, "张三");
-        binaryTree.addLeftChild(2, "李四").addLeftChild(3, "小唐");
-        binaryTree.addRightChild(4, "大千");
+        ThreadedBinaryTree binaryTree = new ThreadedBinaryTree(1, "1");
+        ThreadedBinaryTree.Node threeNode = binaryTree.addLeftChild(3, "3");
+        threeNode.addLeftChild(8, "8");
+        ThreadedBinaryTree.Node node10 = threeNode.addRightChild(10, "10");
+        binaryTree.addRightChild(6, "6").addLeftChild(14, "14");
 
-        // 前序遍历
-        binaryTree.preOrder();
-        System.out.println();
-        // 中序遍历
-        binaryTree.midOrder();
-        System.out.println();
-        // 后序遍历
-        binaryTree.postOrder();
+        // binaryTree.midOrder();
+
+        // 测试
+        binaryTree.threadedNode();
+        // 查看node10左节点是否3，右节点是否是1
+        System.out.println(node10.getLeftChild());
+        System.out.println(node10.getRightChild());
+
+
     }
 
 
@@ -28,13 +31,23 @@ public class BinaryTreeDemo {
 /**
  * 二叉树的类
  */
-class BinaryTree {
+class ThreadedBinaryTree {
 
     /** 根节点 */
     private Node root;
 
-    public BinaryTree(int no, String name) {
+    /** 保存前驱一个节点 */
+    private static Node pre;
+
+    public ThreadedBinaryTree(int no, String name) {
         root = new Node(no, name);
+    }
+
+    /**
+     * 前序遍历
+     */
+    public void threadedNode() {
+        root.threadedNode();
     }
 
     /**
@@ -93,10 +106,51 @@ class BinaryTree {
         private Node leftChild;
         private Node rightChild;
 
+        /** 用变量表示左指针指向的是哪个节点，如果是0为左节点，1为前序节点 */
+        private int leftChildState;
+        /** 用变量表示右指针指向的是哪个节点，如果是0为右节点，1为后序节点 */
+        private int rightChildState;
+
         public Node(int no, String name) {
             this.no = no;
             this.name = name;
         }
+
+        public Node getLeftChild() {
+            return leftChild;
+        }
+
+        public Node getRightChild() {
+            return rightChild;
+        }
+
+        public void threadedNode() {
+            // 1.线索化左子树
+            if (this.leftChild != null) {
+                this.leftChild.threadedNode();
+            }
+            // 2.线索化本节点
+
+            if (this.leftChild == null) {
+                // 左节点指向前驱节点
+                this.leftChild = pre;
+                // 设置状态为指向前驱节点
+                this.leftChildState = 1;
+            }
+            // 使用pre前节来操作右节点的线索化
+            if (pre != null && pre.rightChild == null) {
+                pre.rightChild = this;
+                pre.rightChildState = 1;
+            }
+            // 当前值赋值给前节点，代表跟在node的后面
+            pre = this;
+
+            // 3.线索化右子树
+            if (this.rightChild != null) {
+                this.rightChild.threadedNode();
+            }
+        }
+
 
         /**
          * 前序遍历
