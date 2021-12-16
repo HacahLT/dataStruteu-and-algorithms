@@ -1,6 +1,7 @@
 package com.datastructure.sparseAray;
 
-import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author Hacah
@@ -18,7 +19,9 @@ public class SparseArray {
         //输出数组原始二维数组
         printArrays(chessArr);
 
-        int[][] sparseArr = originToSparse(chessArr);
+//        int[][] sparseArr = originToSparse(chessArr);
+        // 对比第一次实现，以空间换时间，减少了一次双循环
+        int[][] sparseArr = originToSparse2(chessArr);
         sparseToOrigin(sparseArr);
 
 
@@ -97,6 +100,43 @@ public class SparseArray {
     }
 
     /**
+     *
+     * 重写优化稀疏数组的实现
+     * @author hacah
+     * @date 2021/12/16 20:38
+     * @return java.lang.String[][]
+     */
+    public static int[][] originToSparse2(int[][] originArr) {
+
+        // 行数
+        int lengthR = originArr.length;
+        // 列数
+        int lengthC = originArr[0].length;
+        int sepNumCount = 0;
+        LinkedList<int[]> sparseList = new LinkedList<>();
+        for (int i = 0; i < originArr.length; i++) {
+            for (int j = 0; j < originArr[i].length; j++) {
+                // i为行，j为列
+                // 有特殊值
+                int val = originArr[i][j];
+                if (val != 0) {
+                    int[] valArray = {i, j, val};
+                    sparseList.add(valArray);
+                    sepNumCount++;
+                }
+            }
+        }
+        sparseList.addFirst(new int[]{lengthR,lengthC,sepNumCount});
+        int[][] ints = new int[sepNumCount + 1][3];
+        sparseList.toArray(ints);
+        System.out.println();
+        System.out.println("得到的稀疏数组为：");
+        printArrays(ints);
+        System.out.println();
+        return ints;
+    }
+
+    /**
      * 打印二维数组
      */
     public static void printArrays(int[][] array) {
@@ -107,5 +147,6 @@ public class SparseArray {
             System.out.println();
         }
     }
+
 
 }
