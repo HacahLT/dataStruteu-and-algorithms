@@ -1,6 +1,5 @@
 package com.datastructure.tree.arrayTree;
 
-import com.sun.deploy.util.ArrayUtil;
 
 /**
  * @author Hacah
